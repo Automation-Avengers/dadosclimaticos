@@ -9,12 +9,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
 from datetime import datetime, timedelta
+import seaborn as sns
 
 BotMaestroSDK.RAISE_NOT_CONNECTED = False
 
 class Bot(WebBot):
     def action(self, execution=None):
-        cidade = "Manaus"
+        cidade = "São Paulo"
         
         # URL direta do site weather.com para Manaus
         self.browse("https://weather.com/pt-BR/clima/hoje/l/BRXX0043:1:BR")
@@ -156,6 +157,29 @@ def main():
 
     # Fechar navegador
     bot.stop_browser()
+
+    file_path = 'dados_climaticos_weather.xlsx'  # Substitua pelo caminho correto
+    df = pd.read_excel(file_path)
+
+    cidade1 = 'Manaus'  # Substitua pelo nome da primeira cidade
+    cidade2 = 'São Paulo'  # Substitua pelo nome da segunda cidade
+
+    dados_cidade1 = df[df['Cidade'] == cidade1]
+    dados_cidade2 = df[df['Cidade'] == cidade2]
+    
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(x='Data', y='Temperatura', data=dados_cidade1, label=cidade1)
+    sns.lineplot(x='Data', y='Temperatura', data=dados_cidade2, label=cidade2)
+ 
+
+
+    plt.title('Comparação de Temperaturas entre Cidades')
+    plt.xlabel('Data')
+    plt.ylabel('Temperatura (°C)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 if __name__ == "__main__":
     main()
